@@ -163,13 +163,20 @@ return {
     --  - settings (table): Override the default settings passed when initializing the server.
     --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
     local servers = {
+      -- multilang
+      prettier = {},
+      -- c
       clangd = {},
+      -- python
       pyright = {},
-      rust_analyzer = {},
       isort = {},
       black = {},
+      pylint = {},
+      -- rust
+      rust_analyzer = {},
+      -- toml
       tombi = {},
-      prettier = {},
+      -- lua
       lua_ls = {
         settings = {
           Lua = {

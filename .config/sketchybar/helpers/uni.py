@@ -18,7 +18,7 @@ EVENTS_PKL = Path(SCRIPT_DIR / "events.pkl")
 COURSES_TOML = Path(SCRIPT_DIR / "courses.toml")
 CREDENTIALS_TOML = Path(SCRIPT_DIR / "credentials.toml")
 # if DEBUG == True, manually set date is used and events are always loaded from credentials
-DEBUG = True
+DEBUG = False
 
 
 class NoDataError(IOError):
