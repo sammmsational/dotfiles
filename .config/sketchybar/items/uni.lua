@@ -52,7 +52,7 @@ local uni8 = sbar.add('item', 'items.uni.8', options)
 uni:subscribe({ 'forced', 'routine', 'system_woke' }, function()
   sbar.exec('~/.pyenv/shims/python3 ~/.config/sketchybar/helpers/uni/uni.py', function(result)
     local strtable = mysplit(result, '\n')
-    if strtable[1] == '0' then
+    if strtable[1] == '1' then
       uni:set { drawing = false }
       uni0:set { label = { string = '' } }
       uni1:set { label = { string = '' } }
@@ -63,7 +63,7 @@ uni:subscribe({ 'forced', 'routine', 'system_woke' }, function()
       uni6:set { label = { string = '' } }
       uni7:set { label = { string = '' } }
       uni8:set { label = { string = '' } }
-    elseif strtable[1] == '1' then
+    elseif strtable[1] == '2' then
       uni0:set { label = { string = strtable[2], highlight = true } }
       uni1:set { label = { string = strtable[3], highlight = false } }
       uni2:set { label = { string = strtable[4], highlight = true } }
@@ -73,7 +73,7 @@ uni:subscribe({ 'forced', 'routine', 'system_woke' }, function()
       uni6:set { label = { string = '' } }
       uni7:set { label = { string = '' } }
       uni8:set { label = { string = '' } }
-    elseif strtable[1] == '2' then
+    elseif strtable[1] == '3' then
       uni0:set { label = { string = strtable[2], highlight = true } }
       uni1:set { label = { string = strtable[3], highlight = false } }
       uni2:set { label = { string = strtable[4], highlight = true } }
@@ -83,7 +83,7 @@ uni:subscribe({ 'forced', 'routine', 'system_woke' }, function()
       uni6:set { label = { string = strtable[8], highlight = true } }
       uni7:set { label = { string = strtable[9], highlight = false } }
       uni8:set { label = { string = strtable[10], highlight = true } }
-    elseif strtable[1] == '3' then
+    elseif strtable[1] == '4' then
       uni0:set { label = { string = strtable[2], highlight = true } }
       uni1:set { label = { string = strtable[3], highlight = false } }
       uni2:set { label = { string = strtable[4], highlight = true } }
