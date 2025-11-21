@@ -1,0 +1,11 @@
+#!/bin/bash
+
+options=(
+	style=round
+	width=6.0
+	hidpi=off
+	active_color=0xfff4dbd6 # catppuccin macchiato rosewater
+	inactive_color=0xff363a4f # catppuccin macchiato surface0 
+)
+
+borders "${options[@]}"
