@@ -1,0 +1,6 @@
+["Ma1_Vorlesung"]
+id = 1010
+title = "Mathematik 1 - Vorlesung"
+short = "V: Ma1"
+code = "Ma1"
+room = "New_room" # optional
