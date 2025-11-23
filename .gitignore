@@ -24,6 +24,9 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# backups
+*.bak
+
 # sketchybar
 *.pkl
 credentials.toml
