@@ -50,7 +50,7 @@ local uni7 = sbar.add('item', 'items.uni.7', options)
 local uni8 = sbar.add('item', 'items.uni.8', options)
 
 uni:subscribe({ 'forced', 'routine', 'system_woke' }, function()
-  sbar.exec('~/.pyenv/shims/python3 ~/.config/sketchybar/helpers/uni/uni.py', function(result)
+  sbar.exec('~/.pyenv/shims/python3 ~/.config/sketchybar/helpers/uni.py', function(result)
     local strtable = mysplit(result, '\n')
     if strtable[1] == '1' then
       uni:set { drawing = false }

@@ -24,11 +24,13 @@ local remaining_time = sbar.add('item', {
     string = 'Time remaining:',
     width = 100,
     align = 'left',
+    color = colors.white,
   },
   label = {
     string = '??:??h',
     width = 100,
     align = 'right',
+    color = colors.white,
   },
 })
 
