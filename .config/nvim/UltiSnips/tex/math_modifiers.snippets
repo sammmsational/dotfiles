@@ -1,0 +1,59 @@
+global !p
+def math():
+  return vim.eval('vimtex#syntax#in_mathzone()') == '1'
+def notmath():
+  return math() == False
+endglobal
+
+context "math()"
+snippet // "Simple Fraction" iA
+\\frac{$1}{$2}$0
+endsnippet
+
+context "math()"
+snippet "((\d+)|(\d*)(\\)?([A-Za-z]+)((\^|_)(\{\d+\}|\d))*)/" "Regex Fraction" rA
+\frac{`!p snip.rv = match.group(1)`}{$1}$0
+endsnippet
+
+context "math()"
+snippet `([a-zA-Z])\1` "subscript" rA
+_{`!p snip.rv = match.group(1)`} $0
+endsnippet
+
+context "math()"
+snippet `([A-Za-z\d)}])\_([A-Za-z\d\-+][A-Za-z\d\-+])` "auto subscript" rA
+`!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`$1} $0
+endsnippet
+
+priority 10
+context "math()"
+snippet `([A-Za-z\d)}])\^([A-Za-z\d\-+][A-Za-z\d\-+])` "auto supscript" rA
+`!p snip.rv = match.group(1)`^{`!p snip.rv = match.group(2)`$1} $0
+endsnippet
+
+context "math()"
+snippet `(b|B)(ar)` "bar" A
+\overline{$1} $0
+endsnippet
+
+priority 200
+context "math()"
+snippet `(\\?[a-zA-Z]\w*|\\[^(^\s]+\})(b|B)(ar)` "bar" rA
+\overline{`!p snip.rv = match.group(1)`} $0
+endsnippet
+
+context "math()"
+snippet `(t|T)(d)` "tilde" rA
+\widetilde{$1} $0
+endsnippet
+
+priority 200
+context "math()"
+snippet `(\\?[a-zA-Z]\w*|\\[^(^\s]+\})(t|T)(d)` "tilde" rA
+\widetilde{`!p snip.rv = match.group(1)`} $0
+endsnippet
+
+context "math()"
+snippet `(\\?[a-zA-Z]\w*|\\[^(^\s]+\})(h|H)(t)` "hat" rA
+\hat{`!p snip.rv = match.group(1)`} $0
+endsnippet

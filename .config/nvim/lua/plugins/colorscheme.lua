@@ -27,8 +27,8 @@ return {
     lazy = false,
     priority = 1000,
     opts = { transparent = false },
-    init = function()
-      vim.cmd.colorscheme 'kanagawa-paper-ink' -- dark
+    config = function()
+      -- vim.cmd.colorscheme 'kanagawa-paper-ink' -- dark
       -- vim.cmd.colorscheme 'kanagawa-paper-canvas' -- light
     end,
   },
@@ -37,8 +37,16 @@ return {
     lazy = false,
     priority = 1000,
     opts = {},
-    init = function()
+    config = function()
       -- vim.cmd.colorscheme 'tokyonight'
+    end,
+  },
+  {
+    'shaunsingh/nord.nvim',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      vim.cmd.colorscheme 'nord'
     end,
   },
 }
