@@ -1,0 +1,199 @@
+global !p
+def math():
+  return vim.eval('vimtex#syntax#in_mathzone()') == '1'
+def notmath():
+  return math() == False
+def create_matrix(snip, mattype = "matrix"):
+        if mattype == "matrix":
+            matrix_str = (snip.buffer[snip.line].split('mat')[0]+'matrix').strip()
+        elif mattype == "NiceMatrix":
+            matrix_str = (snip.buffer[snip.line].split('nicemat')[0]+'NiceMatrix').strip()
+        rows = 'x'.join(snip.buffer[snip.line].split("x", 2)[:-1])
+        cols = 'x'.join(snip.buffer[snip.line].split("x", 2)[-1:])
+        int_val = lambda string: int(''.join(s for s in string if s.isdigit()))
+        rows = int_val(rows)
+        cols = int_val(cols)
+        offset = cols + 1
+        old_spacing = snip.buffer[snip.line][:snip.buffer[snip.line].rfind('\t') + 1]
+        snip.buffer[snip.line] = ''
+        final_str = old_spacing + "\\begin{"+matrix_str+"}\n"
+        for i in range(rows):
+                final_str += old_spacing + '\t'
+                final_str += " & ".join(['$' + str(i * cols + j + offset) for j in range(cols)])
+                final_str += " \\\\\\\n"
+        final_str += old_spacing + "\\end{"+matrix_str+"}\n$0"
+        snip.expand_anon(final_str)
+def create_LGS(snip):
+        matrix_str = (snip.buffer[snip.line].split('lgsmat')[0]+'NiceArray').strip()
+        rows = 'x'.join(snip.buffer[snip.line].split("x", 2)[:-1])
+        cols = 'x'.join(snip.buffer[snip.line].split("x", 2)[-1:])
+
+        int_val = lambda string: int(''.join(s for s in string if s.isdigit()))
+        rows = int_val(rows)
+        cols = int_val(cols)+1
+
+        fmt_str = "{"+"".join(["c" for i in range(cols-1)])+"|"+"c}[last-col]"
+        offset = cols + 1
+        old_spacing = snip.buffer[snip.line][:snip.buffer[snip.line].rfind('\t') + 1]
+        snip.buffer[snip.line] = ''
+
+        final_str = old_spacing + "\\begin{"+matrix_str+"}"+fmt_str+"\n"
+        for i in range(rows):
+                final_str += old_spacing + '\t'
+                final_str += " & ".join(['$' + str(i * cols + j + offset) for j in range(cols)])
+                final_str += " \\\\\\\n"
+        final_str += old_spacing + "\\end{"+matrix_str+"}$0"
+        snip.expand_anon(final_str)
+endglobal
+
+#-- NOT WORKING!!
+#context notmath(context)
+#snippet `table([1-9]{1})\ ([1-9]{1})` "Table environment" bA
+#\begin{table}[H]
+#       \centering
+#       \begin{tabular}{``
+#       let len = m[2];
+#       let results = "";
+#       for(var i=0; i<len-1; i++){
+#               results += "c|"
+#       }
+#       results += "c";
+#       rv = results;
+#       ``}
+#           \toprule
+#                       ``
+#                       let order = 1;
+#                       nrow = m[1];
+#                       ncol = m[2];
+#                       for (var i=0; i<nrow-1; i++){
+#                               for(var j = 0;j <ncol-1;j++){
+#                                       rv += `${snip.tabstop(order+3)} & `;
+#                                       order ++;
+#                               }       
+#                               rv += ` ${snip.tabstop(order+3)} \\\\`+ `\\`+ `\n`;
+#                               order ++;
+#                               if(i == 0){
+#                                       rv += `         \\midrule` + `\n`;
+#                               }
+#                               rv += `                 `;
+#                       }       
+#                       for(var j = 0;j <ncol-1;j++){
+#                               rv += `${snip.tabstop(order+3)} & `;
+#                               order ++;
+#                       }
+#                       rv += ` ${snip.tabstop(order+3)} \\\\` + `\\`;
+#                       ``
+#       \bottomrule
+#       \end{tabular}
+#       \caption{${2:caption}}
+#       \label{tab:${3:label}}
+#\end{table}
+#endsnippet
+#
+#context math(context)
+#snippet `ary([1-9]{1})\ ([1-9]{1})` "Array environment" ibA
+#\begin{array}{``
+#       let len = m[2];
+#       let results = "";
+#       for(var i=0; i<len; i++){
+#               results += "c"
+#       }
+#       rv = results;
+#       ``}
+#       ``
+#       let order = 1;
+#       let nrow = m[1];
+#       let ncol = m[2];
+#       for (var i=0; i<nrow-1; i++){
+#               for(var j = 0;j <ncol-1;j++){
+#                       rv += `${snip.tabstop(order)} & `;
+#                       order ++;
+#               }
+#               rv += ` ${snip.tabstop(order)} \\\\`+ `\\`+ `\n` + `    `;
+#               order ++;
+#       }
+#       for(var j = 0;j <ncol-1;j++){
+#               rv += `${snip.tabstop(order)} & `;
+#               order ++;
+#       }
+#       rv += ` ${snip.tabstop(order)} \\\\`+ `\\`;
+#       ``
+#\end{array}
+#endsnippet
+#
+#priority 2000
+#context math(context)
+#snippet `(b|p)mat([1-9]{1})\ ([1-9]{1})` "matrix" iwA
+#\begin{``rv = m[1]``matrix}``
+#       let order = 1;
+#       let nrow = m[2];
+#       let ncol = m[3];
+#       rv = `\n`;
+#       for (var i=0; i<nrow; i++){
+#               rv += ' ';
+#               for(var j = 0;j <ncol-1;j++){
+#                       rv += `${snip.tabstop(order)} & `;
+#                       order ++;
+#               }
+#               rv += ` ${snip.tabstop(order)} \\\\`+ `\\`+ `\n`;
+#               order ++;
+#       }
+#       ``\end{``rv = m[1]``matrix}$0
+#endsnippet
+
+#context "math()"
+#snippet `(b|p)mat([1-9])\ ([1-9])` "matrix" rwA
+#`!p
+#mat = match.group(1) + "matrix"
+#nrow = int(match.group(2))
+#ncol = int(match.group(3))
+#
+## Build matrix body
+#out = "\\begin{" + mat + "}\n"
+#tab = 1
+#for i in range(nrow):
+#    row = []
+#    for j in range(ncol):
+#        row.append()
+#        tab += 1
+#    out += "    " + " & ".join(row) + " \\\\\n"
+#out += "\\end{" + mat + "}"
+#snip.rv = out
+#`
+#$0
+#endsnippet
+
+#priority 2000
+#context "math()"
+#snippet `(b|p)mat([1-9])\ ([1-9])` "matrix" rwA
+#`!p
+#mat = match.group(1) + "matrix"
+#nrow = int(match.group(2))
+#ncol = int(match.group(3))
+#
+#out = "\\begin{" + mat + "}\\n"
+#tab = 1
+#for i in range(nrow):
+#    row = []
+#    for j in range(ncol):
+#        # emit the literal placeholder that UltiSnips will parse ($1, $2, ...)
+#        row.append('${%d}' % tab)
+#        tab += 1
+#    out += "    " + " & ".join(row) + " \\\\\n"
+#out += "\\end{" + mat + "}"
+#snip.rv = out
+#`
+#$0
+#endsnippet
+
+pre_expand "create_matrix(snip)"
+snippet "(small|[bBpvV])?mat(rix)?(\d+)x(\d+)" "Generate (small|[bBpvV])?matrix of *rows* by *columns*" br
+endsnippet
+
+pre_expand "create_matrix(snip, 'NiceMatrix')"
+snippet "(small|[bBpvV])?nicemat(rix)?(\d+)x(\d+)" "Generate (small|[bBpvV])?nicematrix of *rows* by *columns*" br
+endsnippet
+
+pre_expand "create_LGS(snip)"
+snippet "(small|[bBpvV])?lgsmat(rix)?(\d+)x(\d+)" "Generate (small|[bBpvV])?LGS of *rows* by *columns*" br
+endsnippet

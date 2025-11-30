@@ -1,0 +1,48 @@
+global !p
+def math():
+  return vim.eval('vimtex#syntax#in_mathzone()') == '1'
+def notmath():
+  return math() == False
+endglobal
+
+
+
+snippet %== "double spacer" bA
+%===================================================================================================
+
+$0
+endsnippet
+snippet %-- "single spacer" bA
+%-------------------------------------------------
+
+$0
+endsnippet
+
+snippet begg "begin custom env" iA
+\begin{${1:env}}$2
+  $0
+\end{${1:env}}
+endsnippet
+
+context "notmath()"
+snippet atf "\autoref{}" wA
+\autoref{$1} $0
+endsnippet
+
+snippet hpr "\hyperref[]{}" wA
+\hyperref[$1]{$2} $0
+endsnippet
+
+snippet lbl "\label{}" iA
+\label{$1}
+endsnippet
+
+context "notmath()"
+snippet fig "Figure environment" b
+\begin{figure}[${1:H}]
+  \centering
+  \includegraphics[width=0.8\textwidth]{$2}
+  \caption{$3}
+  \label{fig:$4}
+\end{figure}
+endsnippet

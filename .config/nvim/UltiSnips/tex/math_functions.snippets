@@ -1,0 +1,130 @@
+global !p
+def math():
+  return vim.eval('vimtex#syntax#in_mathzone()') == '1'
+def notmath():
+  return math() == False
+endglobal
+
+context "math()"
+snippet `(?<!\\)bino` "binomial coefficient" A
+\binom{$1}{$2}$0
+endsnippet
+
+context "math()"
+snippet `(?<!\\)(sin|cos|tan|cot|csc|sec|ln|log|exp|perp|inf|sup|Tr|diag|rank|det|dim|ker|Im|Re|dom|arg|min|max|sgn|OPT|land|lor)` "general" wrA
+\\`!p snip.rv = match.group(1)`($0)
+endsnippet
+priority 10
+context "math()"
+snippet `(?<!\\)a(sin|cos|tan|cot|csc|sec)` "arc-trigonometry" wrA
+\arc`!p snip.rv = match.group(1)`($1) $0
+endsnippet
+priority 10
+context "math()"
+snippet `(?<!\\)x(sin|cos|tan|cot|csc|sec)` "x-trigonometry" wrA
+\\`!p snip.rv = match.group(1)`(x) $0
+endsnippet
+priority 20
+context "math()"
+snippet `(?<!\\)ax(sin|cos|tan|cot|csc|sec)` "arcx-trigonometry" wrA
+\arc`!p snip.rv = match.group(1)`(x) $0
+endsnippet
+priority 10
+context "math()"
+snippet `(?<!\\)2(sin|cos|tan|cot|csc|sec)` "sq-trigonometry" wrA
+\\`!p snip.rv = match.group(1)`^2($1) $0
+endsnippet
+priority 20
+context "math()"
+snippet `(?<!\\)a2(sin|cos|tan|cot|csc|sec)` "arcsq-trigonometry" wrA
+\arc`!p snip.rv = match.group(1)`^2($1) $0
+endsnippet
+priority 0
+
+priority 10
+context "math()"
+snippet dint "integral" iA
+\int_{${1:-\infty}}^{${2:\infty}} ${3} \\,\mathrm{d}${4:x} $0
+endsnippet
+priority 0
+
+context "math()"
+snippet `(?<!\\)int` "integral without anything" rA
+\int $0
+endsnippet
+
+priority 10
+context "math()"
+snippet `a(max|min)` "arg min/max" wrA
+\arg`!p snip.rv = match.group(1)`_{$1} $0
+endsnippet
+priority 0
+
+context "math()"
+snippet `(?<!\\)sum` "sum" rA
+\sum_{${1:i}} $0
+endsnippet
+
+context "math()"
+snippet Sum "sum" wA
+\sum_{${1:i}=${2:1}}^{${3:\infty}} $0
+endsnippet
+
+priority 20
+context "math()"
+snippet `(?<!\\)nlim` "nolimit" A
+\nolimits
+endsnippet
+
+priority 10
+context "math()"
+snippet `(?<!\\)lim` "limit" A
+\lim_{${1:n} \to ${2:\infty}} 
+endsnippet
+
+priority 20
+context "math()"
+snippet `(?<!\\)lsup` "limsup" iA
+\limsup_{${1:n} \to ${2:\infty}} 
+endsnippet
+
+priority 20
+context "math()"
+snippet `(?<!\\)linf` "liminf" iA
+\liminf_{${1:n} \to ${2:\infty}} 
+endsnippet
+priority 0
+
+context "math()"
+snippet `(?<!\\)prd` "product" iA
+\prod $0
+endsnippet
+
+context "math()"
+snippet Prd "product" iA
+\prod_{${1:n}=${2:1}}^{${3:\infty}} $0
+endsnippet
+
+priority 10
+context "math()"
+snippet `(?<!\\)coprd` "coproduct" iA
+\coprod_{${1:n}=${2:1}}^{${3:\infty}} $0
+endsnippet
+priority 0
+
+context "math()"
+snippet pt "\partial" iA
+\partial $0
+endsnippet
+
+priority 10
+context "math()"
+snippet pdif "d/dx" iA
+\frac{\partial ${1:V}}{\partial ${2:x}} $0
+endsnippet
+priority 0
+
+context "math()"
+snippet dif "d/dx" iA
+\frac{\mathrm{d}${1:y}}{\mathrm{d}${2:x}} $0
+endsnippet

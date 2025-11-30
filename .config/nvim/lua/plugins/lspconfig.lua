@@ -176,6 +176,8 @@ return {
       rust_analyzer = {},
       -- toml
       tombi = {},
+      -- tex / latex
+      -- tex-fmt = {},
       -- lua
       lua_ls = {
         settings = {

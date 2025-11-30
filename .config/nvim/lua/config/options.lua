@@ -65,4 +65,5 @@ vim.o.confirm = true
 -- Show command
 vim.o.showcmd = true
 
+-- line wrap
 vim.o.wrap = false
