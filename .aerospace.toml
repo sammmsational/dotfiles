@@ -26,7 +26,7 @@ inner.horizontal = 12
 inner.vertical = 12
 outer.left = 12
 outer.bottom = 12
-outer.top = [{ monitor."built-in.*" = 8 }, 53]  # 16 for bigger bar
+outer.top = [{ monitor."built-in.*" = 3 }, 40]  # 16 for bigger bar
 outer.right = 12
 
 [workspace-to-monitor-force-assignment]

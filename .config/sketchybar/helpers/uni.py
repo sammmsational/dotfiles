@@ -39,7 +39,7 @@ l.setLevel(logging.DEBUG) if DEBUG else l.setLevel(logging.INFO)
 
 if DEBUG:
     now = dt.datetime(
-        2025, 11, 19, 17, 30, tzinfo=ZoneInfo("Europe/Berlin")
+        2025, 12, 8, 9, 30, tzinfo=ZoneInfo("Europe/Berlin")
     )  # MANUALLY SET CURRENT DATE FOR DEBUGGING
 else:
     now = dt.datetime.now().astimezone()
@@ -128,7 +128,7 @@ def load_from_web() -> list[Event]:
 def format_td(td_in: dt.timedelta, min_only: bool = False) -> str:
     tds = int(td_in.total_seconds())
     hours = tds // 3600
-    minutes = (tds - hours * 3600) // 60
+    minutes = (tds - hours * 3600) // 60 + 1
     if hours == 1 and minutes <= 30:
         return f"{hours * 60 + minutes} min"
     elif hours != 0:
@@ -200,41 +200,39 @@ def main() -> str:
     events.sort(key=lambda x: x.start)
 
     if not events:
-        return f"1"  # case 1: no events
+        return "0"  # case 1: no events
     else:
         e = events[0]
     if e.start >= now:  # case 2: before an event
-        return (
-            f"2"
-            f"\n{course_lookup(e, "short", "summary")}"
-            f"\nin "
-            f"\n{format_td(e.start - now)}"
-            f"\n—"
-            f"\n{course_lookup(e, "location", "location")}"
+        return " ".join(
+            [
+                course_lookup(e, "short", "summary"),
+                "in",
+                format_td(e.start - now),
+                "—",
+                course_lookup(e, "location", "location"),
+            ]
         )
     elif e.start < now and len(events) > 1:  # case 3: during not last event
-        return (
-            f"3"
-            f"\n{course_lookup(e, "code", "summary")}"
-            f"\n—"
-            f"\n{format_td(e.end - now, True)}"
-            f"\n|"
-            f"\n{format_td(events[1].start - e.end)}"
-            f"\nPause |"
-            f"\n{course_lookup(events[1], "short", "summary")}"
-            f"\n—"
-            f"\n{course_lookup(events[1], "location", "location")}"
+        return " ".join(
+            [
+                course_lookup(e, "code", "summary"),
+                "—",
+                format_td(e.end - now, True),
+                "╏",
+                format_td(events[1].start - e.end),
+                "Pause ╏",
+                course_lookup(events[1], "short", "summary"),
+                "—",
+                course_lookup(events[1], "location", "location"),
+            ]
         )
     elif e.start < now and len(events) == 1:  # case 4 during last event
-        return (
-            f"4"
-            f"\n{course_lookup(e, "short", "summary")}"
-            f"\n—"
-            f"\n{format_td(e.end - now)}"
+        return " ".join(
+            [course_lookup(e, "short", "summary"), "—", format_td(e.end - now)]
         )
-
-    return "0"
+    return "PYERR"
 
 
 if __name__ == "__main__":
-    print(main())
+    print(main(), end="")

@@ -1,16 +1,15 @@
 local settings = require 'settings'
 local colors = require 'colors'
 
-local cal = sbar.add('item', 'right.calendar', {
+local calendar = sbar.add('item', 'calendar', {
   icon = {
-    color = colors.white,
+    padding_right = 0,
     font = {
       style = settings.font.style_map['Bold'],
       size = 14.0,
     },
   },
   label = {
-    color = colors.white,
     align = 'left',
     font = {
       style = settings.font.style_map['Bold'],
@@ -19,14 +18,10 @@ local cal = sbar.add('item', 'right.calendar', {
   },
   position = 'right',
   update_freq = 1,
+  click_script = 'sketchybar --reload',
 })
 
-sbar.add('item', 'right.calendar.padding', {
-  position = 'right',
-  width = settings.group_paddings,
-})
-
-cal:subscribe({ 'forced', 'routine', 'system_woke' }, function(env)
-  cal:set { icon = os.date '%a, %d %b.', label = os.date '%H:%M' }
+calendar:subscribe({ 'forced', 'routine', 'system_woke' }, function(env)
+  calendar:set { icon = os.date '%a, %d %b.', label = os.date '%H:%M' }
   -- cal:set { icon = os.date '%d.%m.', label = os.date '%H:%M' }
 end)

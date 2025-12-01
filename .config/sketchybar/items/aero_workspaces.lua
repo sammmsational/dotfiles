@@ -1,5 +1,6 @@
 local colors = require 'colors'
 local app_icons = require 'app_icons'
+local settings = require 'settings'
 
 local function add_windows(space, space_name)
   sbar.exec('aerospace list-windows --format %{app-name} --workspace ' .. space_name, function(windows)
@@ -26,23 +27,24 @@ sbar.exec('aerospace list-workspaces --all', function(spaces)
     local space = sbar.add('item', 'space.' .. space_name, {
       icon = {
         string = space_name,
-        color = colors.spaces.inactive,
-        highlight_color = colors.spaces.background,
+        color = colors.text,
+        highlight_color = colors.background,
         padding_left = 8,
+        padding_right = 0,
       },
       label = {
         font = 'sketchybar-app-font:Regular:14.0',
         string = '',
-        color = colors.spaces.inactive,
-        highlight_color = colors.spaces.background,
+        color = colors.text,
+        highlight_color = colors.background,
         y_offset = -1,
       },
       background = {
         drawing = true,
-        color = colors.spaces.background,
+        color = colors.background,
       },
       click_script = 'aerospace workspace ' .. space_name,
-      padding_left = space_name == '1' and 0 or 4,
+      padding_left = space_name == '1' and 0 or settings.padding,
     })
 
     add_windows(space, space_name)
@@ -51,14 +53,14 @@ sbar.exec('aerospace list-workspaces --all', function(spaces)
       local selected = env.FOCUSED_WORKSPACE == space_name
       if selected then
         space:set {
-          background = { color = colors.spaces.inactive },
+          background = { color = colors.text },
           icon = { highlight = true },
           label = { highlight = true },
           add_windows(space, space_name),
         }
       else
         space:set {
-          background = { color = colors.spaces.background },
+          background = { color = colors.background },
           icon = { highlight = false },
           label = { highlight = false },
           add_windows(space, space_name),

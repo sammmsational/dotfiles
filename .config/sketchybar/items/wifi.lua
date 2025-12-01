@@ -1,6 +1,5 @@
 local icons = require 'icons'
 local colors = require 'colors'
-local settings = require 'settings'
 
 local function mysplit(inputstr, sep)
   if sep == nil then
@@ -13,19 +12,16 @@ local function mysplit(inputstr, sep)
   return t
 end
 
-local wifi = sbar.add('item', 'items.wifi', {
-  position = 'q',
+local wifi = sbar.add('item', 'wifi', {
+  position = 'right',
   label = {
-    drawing = true,
     string = 'something broke',
-    color = colors.white,
+    color = colors.text,
   },
-  padding_left = 3,
-})
-
-sbar.add('item', 'items.wifi.padding', {
-  position = 'q',
-  width = settings.group_paddings,
+  background = {
+    drawing = true,
+    color = colors.background,
+  },
 })
 
 wifi:subscribe({ 'wifi_change', 'system_woke' }, function()
@@ -38,7 +34,7 @@ wifi:subscribe({ 'wifi_change', 'system_woke' }, function()
         Wifi_draw_label = true
       else
         Wifi_icon = icons.wifi.connected
-        Wifi_icon_color = colors.white
+        Wifi_icon_color = colors.text
         Wifi_draw_label = true
       end
     else

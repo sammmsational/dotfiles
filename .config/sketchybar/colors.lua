@@ -1,34 +1,25 @@
-local catppuccin = require 'catppuccin'
+-- local theme = require 'themes.catppuccin'
+local theme = require 'themes.nord'
 
 return {
-  black = catppuccin.crust,
-  white = catppuccin.rosewater,
-  red = catppuccin.red,
-  green = catppuccin.green,
-  blue = catppuccin.blue,
-  yellow = catppuccin.yellow,
-  orange = catppuccin.peach,
-  pink = catppuccin.pink,
-  purple = catppuccin.mauve,
-  other_purple = catppuccin.lavender,
-  cyan = catppuccin.sky,
-  grey = catppuccin.overlay2,
-  dirty_white = catppuccin.text,
-  dark_grey = catppuccin.surface0,
+  black = theme.black,
+  white = theme.white,
+  red = theme.red,
+  green = theme.green,
+  blue = theme.blue,
+  yellow = theme.yellow,
+  orange = theme.orange,
+  pink = theme.pink,
+  purple = theme.purple,
+  cyan = theme.cyan,
+  light_grey = theme.light_grey,
+  grey = theme.grey,
+  dark_grey = theme.dark_grey,
+
+  text = theme.text,
+  background = theme.background,
+  blackout = 0xFF000000,
   transparent = 0x00000000,
-  bar = {
-    bg = catppuccin.transparent,
-    border = 0xff2c2e34,
-  },
-  popup = {
-    bg = catppuccin.base,
-    border = catppuccin.transparent,
-  },
-  spaces = {
-    active = catppuccin.red,
-    inactive = catppuccin.rosewater,
-    background = catppuccin.surface0,
-  },
 
   with_alpha = function(color, alpha)
     if alpha > 1.0 or alpha < 0.0 then
