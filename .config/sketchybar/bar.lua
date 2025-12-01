@@ -3,10 +3,10 @@ local colors = require 'colors'
 -- Equivalent to the --bar domain
 sbar.bar {
   topmost = 'window',
-  height = 43,
-  color = colors.dark_grey,
-  padding_right = 15,
-  padding_left = 15,
+  height = 38,
+  color = colors.transparent,
+  padding_right = 5,
+  padding_left = 10,
   blur_radius = 10,
-  notch_width = 220,
+  notch_width = 206 + 2, -- 206 is the actual width
 }

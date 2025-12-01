@@ -2,7 +2,7 @@ local icons = require 'icons'
 local colors = require 'colors'
 local settings = require 'settings'
 
-local battery = sbar.add('item', 'right.battery', {
+local battery = sbar.add('item', 'battery', {
   position = 'right',
   icon = {
     font = {
@@ -12,7 +12,6 @@ local battery = sbar.add('item', 'right.battery', {
   },
   label = {
     font = { family = settings.font.numbers },
-    color = colors.white,
   },
   update_freq = 180,
   popup = { align = 'center' },
@@ -24,13 +23,11 @@ local remaining_time = sbar.add('item', {
     string = 'Time remaining:',
     width = 100,
     align = 'left',
-    color = colors.white,
   },
   label = {
     string = '??:??h',
     width = 100,
     align = 'right',
-    color = colors.white,
   },
 })
 
@@ -96,8 +93,3 @@ battery:subscribe('mouse.clicked', function(env)
     end)
   end
 end)
-
-sbar.add('item', 'right.battery.padding', {
-  position = 'right',
-  width = settings.group_paddings,
-})
