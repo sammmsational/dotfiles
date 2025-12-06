@@ -32,6 +32,9 @@ eval "$(zoxide init zsh --cmd cd)"
 # cargo
 export PATH="~/.cargo/bin:$PATH"
 
+# scripts folder
+export PATH="~/.scripts:$PATH"
+
 # ---------- ALIASES ----------
 alias ls='eza --icons --color=always --group-directories-first'
 alias ll='eza -almhF --icons --color=always --group-directories-first --time-style long-iso'
