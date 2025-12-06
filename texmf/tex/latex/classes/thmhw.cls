@@ -1,18 +1,12 @@
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Felipe Portales' HomeWorks
-% Maintainer: Felipe Portales-Oliva (f.portales.oliva@gmail.com)
-% 
-% Document class to produce simple yet stylish homework submissions 
-%
-% This package is public domain, according to :
-%    The Unlicense <https://unlicense.org>
+% modified from: https://gitlab.com/fportales/fphw
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%% Identification
 
 \NeedsTeXFormat{LaTeX2e} % we need to have LaTeX2e for this to compile
-\ProvidesClass{thmhw}[2019/03/19] % fpshw is the name we need to provide to 
-                                  % the documentclass command on the .tex file
+\ProvidesClass{thmhw}[2025/12/06]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -51,14 +45,13 @@
 %%% Bulk Declarations
 %%%% Here we do more declarations and call other files
 
-
-% we need to load 
+% we need to load
 \LoadClass{article}
 
 % we will modify sections, subsections and sub subsections
 \RequirePackage{titlesec}
-% Modification of section 
-\titleformat{\section}[block]{\normalsize\bfseries\filcenter}{\thesection.}{.3cm}{} 
+% Modification of section
+\titleformat{\section}[block]{\normalsize\bfseries\filcenter}{\thesection.}{.3cm}{}
 
 % modification of subsection and sub sub section
 \titleformat{\subsection}[runin]{\bfseries}{ \thesubsection.abc}
@@ -74,10 +67,12 @@
 \fancyhead{}
 \fancyfoot{}
 \pagestyle{fancy}
-\renewcommand{\headrulewidth}{0.4pt} % we want rules 
+\renewcommand{\headrulewidth}{0.4pt} % we want rules
 \renewcommand{\footrulewidth}{0.4pt}
 \fancyhead[RO] {\footnotesize\thepage}
-\fancyhead[LO] {\footnotesize{\ifx\classlocal\undefined{}\else\itshape\classlocal{} --{} \fi}\makeatletter\@title\makeatother }
+\fancyhead[LO]
+{\footnotesize{\ifx\classlocal\undefined{}\else\itshape\classlocal{}
+--{} \fi}\makeatletter\@title\makeatother }
 \fancyfoot[RO] {\footnotesize\itshape\makeatletter\@author\makeatother}
 
 % New title style for the document
@@ -90,8 +85,6 @@
     \fi
     \vspace{10pt}
 
-
-
     % TITLEBOX
     \hrule
     \vspace{8pt}
@@ -101,19 +94,19 @@
     \hrule
     \vspace{4pt}
 
-   % DATE AND PROFESSOR
+    % DATE AND PROFESSOR
     \ifx\classlocal\undefined
     \makebox[\textwidth][r]{\footnotesize\itshape\@date}
     \else
-      \makebox[\textwidth]{
-        \footnotesize
-        {\classlocal}
-        \ifx\professorloc\undefined\else
-          -- {\itshape \professorloc}%
-        \fi
-        \hfill
-        \itshape\@date
-      }\\[8pt]%
+    \makebox[\textwidth]{
+      \footnotesize
+      {\classlocal}
+      \ifx\professorloc\undefined\else
+      -- {\itshape \professorloc}%
+      \fi
+      \hfill
+      \itshape\@date
+    }\\[8pt]%
     \fi
 
   \end{center}
@@ -122,12 +115,19 @@
 % definition of the "problem" environment
 \newsavebox{\problembox}
 \newenvironment{problem}
-    {\begin{center} \begin{lrbox}{\problembox}\begin{minipage}{.98\textwidth}}
-    {\end{minipage}\end{lrbox}\fbox{\usebox{\problembox}} \end{center} }
+{
+  \begin{center}
+    \begin{lrbox}{\problembox}
+    \begin{minipage}{.98\textwidth}}
+      {
+      \end{minipage}
+    \end{lrbox}\fbox{\usebox{\problembox}}
+\end{center} }
 
 %%% OTHER STUFF
 \setlength{\parskip}{.5em}
 \setlength{\headheight}{15pt}
+\setlength{\parindent}{0pt}
 
 %%% We finish the class with this command
 \endinput

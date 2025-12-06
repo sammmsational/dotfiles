@@ -48,6 +48,7 @@ alias vi='nvim'
 alias vim='nvim'
 alias zshrc='source ~/.zshrc'
 alias sudo='sudo '
+alias lg='lazygit'
 
 # ---------- ZSH-PLUGINS ----------
 source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
