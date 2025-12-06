@@ -27,6 +27,9 @@ Temporary Items
 # backups
 *.bak
 
+# neovim
+.config/nvim/lazy-lock.json
+
 # sketchybar
 *.pkl
 credentials.toml
