@@ -1,6 +1,5 @@
 return {
   'lervag/vimtex',
-  lazy = false,
   ft = { 'tex' },
   init = function() -- vimtex options, loaded before plugin
     -- Skim sync settings:
