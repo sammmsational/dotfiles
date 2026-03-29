@@ -4,6 +4,24 @@
             "complex_modifications": {
                 "rules": [
                     {
+                        "description": "[de -> us_int] option + ö -> ‚",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "semicolon",
+                                    "modifiers": { "mandatory": ["option"] }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "s",
+                                        "modifiers": ["left_option"]
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
                         "description": "[de -> us_int] shift + -_",
                         "manipulators": [
                             {
@@ -14,7 +32,7 @@
                                 "to": [
                                     {
                                         "key_code": "hyphen",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": ["shift"]
                                     }
                                 ],
                                 "type": "basic"
@@ -512,7 +530,7 @@
                                     "key_code": "a",
                                     "modifiers": {
                                         "mandatory": ["option"],
-                                        "optional": ["option"]
+                                        "optional": ["shift"]
                                     }
                                 },
                                 "to": [{ "key_code": "quote" }],
