@@ -91,6 +91,9 @@ context "math()"
 snippet nal "new line in alignat3" A
 \Leftrightarrow \ && $1 &= $2 && $3 \\\\$0
 endsnippet
+snippet nsl "new single equals line" A
+&& &= $1 && $2 \\\\$0
+endsnippet
 context "notmath()"
 snippet ial "final implies line" A
 \[
@@ -160,4 +163,8 @@ endsnippet
 
 snippet `(?<!\\)emph` "emph" riA
 \emph{$1}$0
+endsnippet
+
+snippet qty "siunitx qty" iA
+\qty{$1}{$2}$0
 endsnippet
