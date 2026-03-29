@@ -7,9 +7,6 @@ local uni = sbar.add('item', 'uni', {
     padding_right = 10,
     padding_left = 10,
   },
-  background = {
-    drawing = true,
-  },
 })
 
 uni:subscribe({ 'forced', 'routine', 'system_woke' }, function()
@@ -18,7 +15,11 @@ uni:subscribe({ 'forced', 'routine', 'system_woke' }, function()
     if result == '0' then
       uni:set { label = '', background = { drawing = false } }
     else
-      uni:set { label = result, background = { drawing = true } }
+      local lines = {}
+      for s in result:gmatch '[^\r\n]+' do
+        table.insert(lines, s)
+      end
+      uni:set { label = lines[2], background = { drawing = true }, click_script = string.format('open %s', lines[1]) }
     end
   end)
 end)

@@ -7,25 +7,26 @@ from base64 import b64decode
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import icalendar as ical
 import requests
 from caldav.davclient import get_davclient
 from caldav.lib.error import DAVError
-from icalendar import Calendar, Event
-from requests import HTTPError
+from requests import HTTPError, RequestException
 
 SCRIPT_DIR = Path(__file__).parent
 EVENTS_PKL = Path(SCRIPT_DIR / "events.pkl")
+try:
+    EVENTS_PKL_MODDATE = dt.datetime.fromtimestamp(
+        EVENTS_PKL.stat().st_mtime, tz=ZoneInfo("Europe/Berlin")
+    )
+except FileNotFoundError as fne:
+    EVENTS_PKL_MODDATE = None
 COURSES_TOML = Path(SCRIPT_DIR / "courses.toml")
 CREDENTIALS_TOML = Path(SCRIPT_DIR / "credentials.toml")
-# if DEBUG == True, manually set date is used and events are always loaded from credentials
-DEBUG = True
+DEBUG_FUNC = False
+DEBUG_LOG = False
 
 
-class NoDataError(IOError):
-    pass
-
-
-# create logger
 l = logging.getLogger(__name__)
 logFormatter = logging.Formatter(
     fmt="%(asctime)s :: %(levelname)s :: %(message)s",
@@ -35,12 +36,10 @@ handler = logging.StreamHandler(stream=sys.stderr)
 handler.setFormatter(logFormatter)
 handler.setLevel(logging.DEBUG)
 l.addHandler(handler)
-l.setLevel(logging.DEBUG) if DEBUG else l.setLevel(logging.INFO)
+l.setLevel(logging.DEBUG) if DEBUG_LOG else l.setLevel(logging.INFO)
 
-if DEBUG:
-    now = dt.datetime(
-        2025, 12, 8, 9, 30, tzinfo=ZoneInfo("Europe/Berlin")
-    )  # MANUALLY SET CURRENT DATE FOR DEBUGGING
+if DEBUG_FUNC:
+    now = dt.datetime(2025, 12, 8, 9, 30, tzinfo=ZoneInfo("Europe/Berlin"))
 else:
     now = dt.datetime.now().astimezone()
 
@@ -53,17 +52,91 @@ except IOError as ioe:
     credentials = {}
 try:
     with COURSES_TOML.open("rb") as f:
-        courses = tomllib.load(f)
+        courses: dict[str, dict[str, str]] = tomllib.load(f)
     l.info("Courses loaded")
 except IOError as ioe:
     l.error(ioe)
-    courses = {}
+    courses: dict[str, dict[str, str]] = {}
+
+
+class NoDataError(IOError):
+    pass
+
+
+class Event:
+    start: dt.datetime
+    end: dt.datetime
+    _key: str
+    location: str
+    title: str
+    short: str
+    code: str
+    url: str
+
+    def __init__(self, e: ical.Event):
+        if isinstance(e.start, dt.datetime):
+            self.start = e.start
+        else:
+            raise TypeError
+        if isinstance(e.end, dt.datetime):
+            self.end = e.end
+        else:
+            raise TypeError
+        self._key = ""
+        for k, v in courses.items():
+            if e["summary"] == v["title"]:
+                self._key = k
+        try:
+            self.location = courses[self._key]["location"]
+        except KeyError:
+            try:
+                self.location = e["location"]
+            except KeyError:
+                self.location = "NOLOC"
+
+        try:
+            self.title = courses[self._key]["title"]
+        except KeyError:
+            try:
+                self.title = e["summary"]
+            except KeyError:
+                self.title = "NOTITLE"
+
+        try:
+            self.short = courses[self._key]["short"]
+        except KeyError:
+            self.short = (self.title[:15] + "…") if len(self.title) > 15 else self.title
+
+        try:
+            self.code = courses[self._key]["code"]
+        except KeyError:
+            self.code = (self.title[:5] + "…") if len(self.title) > 5 else self.title
+
+        try:
+            self.url = courses[self._key]["url"]
+        except KeyError:
+            try:
+                self.url = e["url"]
+            except KeyError:
+                self.url = "https://moodle.thm.de/my/courses.php"
+
+        if not all(
+            (
+                self.start,
+                self.end,
+                self.location,
+                self.title,
+                self.short,
+                self.code,
+                self.url,
+            )
+        ):
+            raise ValueError
 
 
 def load_from_file() -> list[Event]:
-    # error handling is done when function is called to avoid recursion
     with EVENTS_PKL.open("rb") as f:
-        data: list[Event] = pickle.load(f)
+        data = pickle.load(f)
         l.info(
             f"Data loaded from file (last mod: "
             f"{dt.datetime.fromtimestamp(EVENTS_PKL.lstat().st_mtime).strftime('%d.%m.%y %H:%M')})"
@@ -81,7 +154,7 @@ def save_to_file(data: list[Event]) -> None:
         l.warning(ioe)
 
 
-def load_from_dav() -> list[Event]:
+def load_from_dav() -> list[ical.Event]:
     events = []
     for name, entry in credentials.items():
         if entry["type"] == "dav":
@@ -105,14 +178,14 @@ def load_from_dav() -> list[Event]:
         raise NoDataError
 
 
-def load_from_web() -> list[Event]:
+def load_from_web() -> list[ical.Event]:
     events = []
     for name, entry in credentials.items():
         if entry["type"] == "web":
             try:
                 r = requests.get(entry["url"])
                 r.raise_for_status()
-                rcal = Calendar.from_ical(r.text)
+                rcal = ical.Calendar.from_ical(r.text)
                 for e in rcal.walk("VEVENT"):
                     events.append(e)
                 l.info(f"Events loaded from '{name}'")
@@ -125,112 +198,88 @@ def load_from_web() -> list[Event]:
         raise NoDataError
 
 
-def format_td(td_in: dt.timedelta, min_only: bool = False) -> str:
-    tds = int(td_in.total_seconds())
-    hours = tds // 3600
-    minutes = (tds - hours * 3600) // 60 + 1
-    if hours == 1 and minutes <= 30:
-        return f"{hours * 60 + minutes} min"
-    elif hours != 0:
-        return f"{hours}:{minutes:02d}h"
-    elif min_only:
-        return f"{(hours * 60 + minutes):02d} min"
+def td_fmt(td: dt.timedelta) -> str:
+    seconds = int(td.total_seconds())
+    hours, seconds = divmod(seconds, 3600)
+    minutes, seconds = divmod(seconds, 60)
+
+    if not hours:
+        if not seconds:
+            fmt = f"{minutes:02d} min"
+        else:
+            fmt = f"{(minutes+1):02d} min"
+    elif minutes == 60:
+        fmt = "60 min"
     else:
-        return f"{minutes} min"
+        fmt = f"{hours:02d}:{minutes:02d}h"
 
-
-def course_lookup(lookup: dict, req: str = "code", fallback="summary") -> str:
-    for _, x in courses.items():
-        if x["title"] == lookup["SUMMARY"]:
-            try:
-                return x[req]
-            except KeyError:
-                return lookup[req]
-    return lookup[fallback]
+    return fmt
 
 
 def main() -> str:
-    all_events = []
-    if (
-        DEBUG
-        or (
-            now
-            - dt.datetime.fromtimestamp(
-                EVENTS_PKL.lstat().st_mtime, tz=ZoneInfo("Europe/Berlin")
-            )
-        ).total_seconds()
-        < 3600
-    ):
-        try:
-            [all_events.append(e) for e in load_from_web()]
-            [all_events.append(e) for e in load_from_dav()]
-            save_to_file(all_events)
-        except NoDataError:
-            l.error("No data from web or dav, falling back to file")
-            try:
-                [all_events.append(e) for e in load_from_file()]
-            except IOError:
-                l.error("Unable to load any data. Exiting...")
-                return "0"
-
-    else:
-        try:
-            [all_events.append(e) for e in load_from_file()]
-        except IOError as ioe:
-            l.error("Unable to load data from file, falling back to credentials")
-            l.error(ioe)
-            try:
-                [all_events.append(e) for e in load_from_web()]
-                [all_events.append(e) for e in load_from_dav()]
-                save_to_file(all_events)
-            except NoDataError:
-                l.error("Unable to load any data. Exiting...")
-                return "0"
-
-    l.debug(f"{len(all_events)} events loaded")
-
+    ical_events = []
     events = []
-    for e in all_events:
-        if (
-            isinstance(e.start, dt.datetime)  # is not an all-day event
-            and e.start.date() == now.date()  # is today
-            and e.end > now  # has not ended
-        ):
-            events.append(e)
-    events.sort(key=lambda x: x.start)
+    if DEBUG_FUNC:
+        [ical_events.append(e) for e in load_from_web()]
+        [ical_events.append(e) for e in load_from_dav()]
+    else:
+        if not EVENTS_PKL_MODDATE or (now - EVENTS_PKL_MODDATE).total_seconds() > 3600:
+            try:
+                [ical_events.append(e) for e in load_from_web()]
+                [ical_events.append(e) for e in load_from_dav()]
+            except RequestException as e:
+                l.warning(e)
+        else:
+            events = load_from_file()
 
     if not events:
-        return "0"  # case 1: no events
+        for e in ical_events:
+            if (
+                isinstance(e.start, dt.datetime)  # is not an all-day event
+                and e.start.date() == now.date()  # is today
+                and e.end > now  # has not ended
+            ):
+                events.append(Event(e))
+        save_to_file(events)
+    else:  # remove old events
+        for i, e in enumerate(events):
+            if e.end < now:
+                events.pop(i)
+
+    events.sort(key=lambda e: e.start)
+
+    l.info(f"{len(events)} events loaded")
+
+    if not events:
+        return "0"  # no events
     else:
         e = events[0]
-    if e.start >= now:  # case 2: before an event
-        return " ".join(
+    if e.start >= now:  # before an event
+        return f"{e.url}\n" + " ".join(
             [
-                course_lookup(e, "short", "summary"),
+                e.short,
                 "in",
-                format_td(e.start - now),
+                td_fmt(e.start - now),
                 "—",
-                course_lookup(e, "location", "location"),
+                e.location,
             ]
         )
-    elif e.start < now and len(events) > 1:  # case 3: during not last event
-        return " ".join(
+    elif e.start < now and len(events) > 1:  # during not last event
+        return f"{e.url}\n" + " ".join(
             [
-                course_lookup(e, "code", "summary"),
+                e.code,
                 "—",
-                format_td(e.end - now, True),
+                td_fmt(e.end - now),
                 "╏",
-                format_td(events[1].start - e.end),
+                td_fmt(events[1].start - e.end),
                 "Pause ╏",
-                course_lookup(events[1], "short", "summary"),
+                events[1].short,
                 "—",
-                course_lookup(events[1], "location", "location"),
+                events[1].location,
             ]
         )
-    elif e.start < now and len(events) == 1:  # case 4 during last event
-        return " ".join(
-            [course_lookup(e, "short", "summary"), "—", format_td(e.end - now)]
-        )
+    elif e.start < now and len(events) == 1:  # during last event
+        return f"{e.url}\n" + " ".join([e.short, "—", td_fmt(e.end - now)])
     return "PYERR"
 
 
