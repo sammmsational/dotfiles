@@ -2,6 +2,7 @@
 require 'items.aero_workspaces'
 
 -- align: q
+-- require 'items.iceportal'
 
 -- align: e
 

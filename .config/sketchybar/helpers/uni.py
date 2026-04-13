@@ -223,14 +223,20 @@ def main() -> str:
         [ical_events.append(e) for e in load_from_web()]
         [ical_events.append(e) for e in load_from_dav()]
     else:
-        if not EVENTS_PKL_MODDATE or (now - EVENTS_PKL_MODDATE).total_seconds() > 3600:
-            try:
-                [ical_events.append(e) for e in load_from_web()]
-                [ical_events.append(e) for e in load_from_dav()]
-            except RequestException as e:
-                l.warning(e)
-        else:
-            events = load_from_file()
+        try:
+            if (
+                not EVENTS_PKL_MODDATE
+                or (now - EVENTS_PKL_MODDATE).total_seconds() > 3600
+            ):
+                try:
+                    [ical_events.append(e) for e in load_from_web()]
+                    [ical_events.append(e) for e in load_from_dav()]
+                except RequestException as e:
+                    l.warning(e)
+            else:
+                events = load_from_file()
+        except NoDataError as nde:
+            l.warning(nde)
 
     if not events:
         for e in ical_events:

@@ -43,6 +43,10 @@ wifi:subscribe({ 'wifi_change', 'system_woke' }, function()
       Wifi_draw_label = false
     end
 
+    if strtable[1] == 'WIFIonICE' then
+      require 'items.iceportal'
+    end
+
     wifi:set {
       icon = {
         string = Wifi_icon,
