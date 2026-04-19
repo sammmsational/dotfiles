@@ -186,24 +186,41 @@ snippet Flr "floor" iA
 \left\lfloor $1 \right\rfloor$0
 endsnippet
 
+#context "math()"
+#snippet abs "abs value" iA
+#\vert ${1} \vert$0
+#endsnippet
 context "math()"
 snippet abs "abs value" iA
-\vert ${1} \vert$0
+\abs*{$1}$0
 endsnippet
 
+#context "math()"
+#snippet Abs "abs value" iA
+#\left\vert ${1} \right\vert$0
+#endsnippet
 context "math()"
-snippet Abs "abs value" iA
-\left\vert ${1} \right\vert$0
+snippet Abs "abs* value" iA
+\abs{$1}$0
 endsnippet
 
+#context "math()"
+#snippet norm "norm" iA
+#\lVert $1 \rVert$0
+#endsnippet
+priority 10
 context "math()"
-snippet norm "norm" iA
-\lVert $1 \rVert$0
+snippet nrm "norm" iA
+\norm*{$1}$0
 endsnippet
 
+#context "math()"
+#snippet Norm "Norm" iA
+#\left\lVert $1 \right\rVert$0
+#endsnippet
 context "math()"
 snippet Norm "Norm" iA
-\left\lVert $1 \right\rVert$0
+\norm{$1}$0
 endsnippet
 
 priority 10
@@ -419,9 +436,10 @@ snippet cncl "cancel" iA
 \cancel{$1}$0
 endsnippet
 
+# a.,
 context "math()"
 snippet `(\\?[a-zA-Z]\w*|\\[^(^\s]+\})(,\.|\.,)` "Vector postfix" rA
-\vec{`!p snip.rv = match.group(1)`}$0
+\vv{`!p snip.rv = match.group(1)`}$0
 endsnippet
 
 context "math()"

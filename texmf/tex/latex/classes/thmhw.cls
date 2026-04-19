@@ -129,5 +129,36 @@
 \setlength{\headheight}{15pt}
 \setlength{\parindent}{0pt}
 
+\RequirePackage{mathtools}
+
+% Define the base commands
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}
+
+% Swap the starred and non-starred versions
+% This makes \abs{} auto-resize and \abs*{} fixed-size
+\makeatletter
+\let\oldabs\abs
+\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+
+\let\oldnorm\norm
+\def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
+\makeatother
+
+% \vec2{}{} and \vec3{}{}{}
+\RequirePackage{amsmath}
+\newcommand{\vectwo}[2]{
+  \begin{pmatrix} #1 \\ #2
+\end{pmatrix}}
+\newcommand{\vecthree}[3]{
+  \begin{pmatrix} #1 \\ #2 \\ #3
+\end{pmatrix}}
+\newcommand{\svectwo}[2]{
+  \begin{psmallmatrix} #1 \\ #2
+\end{psmallmatrix}}
+\newcommand{\svecthree}[3]{
+  \begin{psmallmatrix} #1 \\ #2 \\ #3
+\end{psmallmatrix}}
+
 %%% We finish the class with this command
 \endinput

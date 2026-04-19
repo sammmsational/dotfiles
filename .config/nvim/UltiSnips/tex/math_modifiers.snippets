@@ -15,21 +15,21 @@ snippet "((\d+)|(\d*)(\\)?([A-Za-z]+)((\^|_)(\{\d+\}|\d))*)/" "Regex Fraction" r
 \frac{`!p snip.rv = match.group(1)`}{$1}$0
 endsnippet
 
-context "math()"
-snippet `([a-zA-Z])\1` "subscript" rA
-_{`!p snip.rv = match.group(1)`}$0
-endsnippet
+#context "math()"
+#snippet `([a-zA-Z])\1` "subscript" rA
+#_{`!p snip.rv = match.group(1)`}$0
+#endsnippet
 
-context "math()"
-snippet `([A-Za-z\d)}])\_([A-Za-z\d\-+][A-Za-z\d\-+])` "auto subscript" rA
-`!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`$1}$0
-endsnippet
+#context "math()"
+#snippet `([A-Za-z\d)}])\_([A-Za-z\d\-+][A-Za-z\d\-+])` "auto subscript" rA
+#`!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`$1}$0
+#endsnippet
 
-priority 10
-context "math()"
-snippet `([A-Za-z\d)}])\^([A-Za-z\d\-+][A-Za-z\d\-+\.])` "auto supscript" rA
-`!p snip.rv = match.group(1)`^{`!p snip.rv = match.group(2)`$1}$0
-endsnippet
+#priority 10
+#context "math()"
+#snippet `([A-Za-z\d)}])\^([A-Za-z\d\-+][A-Za-z\d\-+\.])` "auto supscript" rA
+#`!p snip.rv = match.group(1)`^{`!p snip.rv = match.group(2)`$1}$0
+#endsnippet
 
 context "math()"
 snippet `(b|B)(ar)` "bar" A

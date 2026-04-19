@@ -60,3 +60,23 @@ endsnippet
 pre_expand "create_coeff_matrix(snip)"
 snippet "(small|[bBpvV])?cmat(rix)?(\d+)x(\d+)" "Generate (small|[bBpvV])?coeff_matrix of *rows* by *columns*" br
 endsnippet
+
+context "math()"
+snippet vtw "two-dimensional vector" A
+\vectwo{$1}{$2}$0
+endsnippet
+
+context "math()"
+snippet svtw "small two-dimensional vector" A
+\svectwo{$1}{$2}$0
+endsnippet
+
+context "math()"
+snippet vtr "three-dimensional vector" A
+\vecthree{$1}{$2}{$3}$0
+endsnippet
+
+context "math()"
+snippet svtr "small three-dimensional vector" A
+\svecthree{$1}{$2}{$3}$0
+endsnippet
