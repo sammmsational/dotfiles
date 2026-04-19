@@ -105,7 +105,7 @@ class Event:
         try:
             self.short = courses[self._key]["short"]
         except KeyError:
-            self.short = (self.title[:15] + "…") if len(self.title) > 15 else self.title
+            self.short = (self.title[:10] + "…") if len(self.title) > 15 else self.title
 
         try:
             self.code = courses[self._key]["code"]
@@ -254,7 +254,7 @@ def main() -> str:
 
     events.sort(key=lambda e: e.start)
 
-    l.info(f"{len(events)} events loaded")
+    l.info(f"{len(events)} events constructed")
 
     if not events:
         return "0"  # no events
